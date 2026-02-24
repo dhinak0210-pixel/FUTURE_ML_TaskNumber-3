@@ -1,10 +1,10 @@
 site_name: Resume ML System
 site_description: Production-grade ML system for automated resume screening
 site_author: Your Name
-site_url: https://yourusername.github.io/resume-ml-system
+site_url: https://dhinak0210-pixel.github.io/FUTURE_ML_TaskNumber-3
 
-repo_name: yourusername/resume-ml-system
-repo_url: https://github.com/yourusername/resume-ml-system
+repo_name: dhinak0210-pixel/FUTURE_ML_TaskNumber-3
+repo_url: https://github.com/dhinak0210-pixel/FUTURE_ML_TaskNumber-3
 edit_uri: edit/main/docs/
 
 theme:

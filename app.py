@@ -5,10 +5,10 @@ from pathlib import Path
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
-# Mock imports for demo purposes since the core isn't implemented yet
-# from resume_ml.core.parser import ResumeParser
-# from resume_ml.core.matcher import JobMatcher
-# from resume_ml.core.ranker import CandidateRanker
+# Real imports from the implemented core
+from resume_ml.core.parser import ResumeParser
+from resume_ml.core.matcher import JobMatcher
+from resume_ml.core.gap_analyzer import SkillGapAnalyzer
 
 # Page config
 st.set_page_config(
@@ -46,7 +46,7 @@ def main():
     This demo runs entirely in your browser using 
     Streamlit and the code from the GitHub repository.
     
-    [View Source Code](https://github.com/yourusername/resume-ml-system)
+    [View Source Code](https://github.com/dhinak0210-pixel/FUTURE_ML_TaskNumber-3)
     """)
     
     # Main interface
@@ -248,11 +248,20 @@ def generate_demo_result(resume: str, jd: str) -> dict:
         'explanation': f"Score of {score:.0%} based on strong technical alignment with core requirements. Candidate shows 5+ years relevant experience with primary tech stack. Minor gaps in cloud-native technologies."
     }
 
-def process_resume(resume: str, jd: str) -> dict:
-    """Actual processing (would load models from repo)"""
-    # This would use the actual models from the repository
-    # For GitHub-hosted demo, we use the demo mode
-    return generate_demo_result(resume, jd)
+def process_resume(resume_text: str, jd_text: str) -> dict:
+    """Actual processing using the Screening Engine logic."""
+    matcher = JobMatcher()
+    gap_analyzer = SkillGapAnalyzer()
+    
+    analysis = matcher.calculate_score(resume_text, jd_text)
+    gaps = gap_analyzer.analyze_gaps(resume_text, jd_text)
+    
+    return {
+        'overall_score': analysis['overall_match_score'],
+        'matching_skills': gaps['matched_skills'],
+        'skill_gaps': gaps['missing_skills'],
+        'explanation': f"Match score of {analysis['overall_match_score']:.0%} calculated using {analysis['engine']} engine."
+    }
 
 if __name__ == "__main__":
     main()
