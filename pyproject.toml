@@ -1,0 +1,105 @@
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "resume-ml-system"
+version = "2.0.0"
+description = "Production-grade ML system for automated resume screening and ranking"
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+license = "MIT"
+repository = "https://github.com/yourusername/resume-ml-system"
+documentation = "https://yourusername.github.io/resume-ml-system"
+keywords = ["resume", "ml", "nlp", "screening", "hr-tech", "bert"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Human Resources",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Office/Business :: Human Resources",
+]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+torch = "^2.1.0"
+transformers = "^4.35.0"
+sentence-transformers = "^2.2.2"
+spacy = "^3.7.0"
+fastapi = "^0.104.0"
+uvicorn = {extras = ["standard"], version = "^0.24.0"}
+pydantic = "^2.5.0"
+pandas = "^2.1.0"
+numpy = "^1.24.0"
+scikit-learn = "^1.3.0"
+xgboost = "^2.0.0"
+pdfplumber = "^0.10.0"
+python-multipart = "^0.0.6"
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+redis = "^5.0.0"
+sqlalchemy = "^2.0.0"
+alembic = "^1.12.0"
+structlog = "^23.2.0"
+prometheus-client = "^0.19.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+pytest-cov = "^4.1.0"
+pytest-asyncio = "^0.21.0"
+black = "^23.11.0"
+isort = "^5.12.0"
+flake8 = "^6.1.0"
+mypy = "^1.7.0"
+pre-commit = "^3.5.0"
+bandit = "^1.7.5"
+jupyter = "^1.0.0"
+mkdocs-material = "^9.4.0"
+mkdocstrings = {extras = ["python"], version = "^0.24.0"}
+
+[tool.poetry.group.notebook.dependencies]
+jupyterlab = "^4.0.0"
+ipywidgets = "^8.1.0"
+matplotlib = "^3.8.0"
+seaborn = "^0.13.0"
+plotly = "^5.17.0"
+
+[tool.poetry.scripts]
+resume-ml-train = "resume_ml.cli:train_command"
+resume-ml-serve = "resume_ml.cli:serve_command"
+resume-ml-evaluate = "resume_ml.cli:evaluate_command"
+
+[tool.black]
+line-length = 88
+target-version = ['py39', 'py310', 'py311']
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+line_length = 88
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+addopts = "-v --tb=short"
+
+[tool.coverage.run]
+source = ["src/resume_ml"]
+omit = ["*/tests/*", "*/test_*"]
+
+[tool.bandit]
+exclude_dirs = ["tests"]
+skips = ["B101"]  # Skip assert warnings in non-test files

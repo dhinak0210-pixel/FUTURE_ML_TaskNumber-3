@@ -1,0 +1,86 @@
+name: Train Model
+
+on:
+  workflow_dispatch:  # Manual trigger
+    inputs:
+      model_type:
+        description: 'Model to train'
+        required: true
+        default: 'ner'
+        type: choice
+        options:
+          - ner
+          - screening
+          - embedding
+      epochs:
+        description: 'Training epochs'
+        required: true
+        default: '10'
+      use_gpu:
+        description: 'Use GPU runner'
+        required: true
+        default: false
+        type: boolean
+
+jobs:
+  train:
+    runs-on: ${{ inputs.use_gpu && 'ubuntu-latest-gpu' || 'ubuntu-latest' }}
+    timeout-minutes: 360  # 6 hours max
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install -r requirements-train.txt
+      
+      - name: Download training data
+        run: |
+          # From GitHub Releases or external source
+          wget https://github.com/${{ github.repository }}/releases/download/data-v1.0/training-data.tar.gz
+          tar -xzf training-data.tar.gz -C data/
+      
+      - name: Train model
+        run: |
+          python -m src.resume_ml.models.train \
+            --model-type ${{ inputs.model_type }} \
+            --epochs ${{ inputs.epochs }} \
+            --output-dir models/${{ inputs.model_type }}/
+      
+      - name: Evaluate model
+        run: |
+          python -m src.resume_ml.models.evaluate \
+            --model-path models/${{ inputs.model_type }}/ \
+            --test-data data/test/ \
+            --output report.json
+      
+      - name: Upload model artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: trained-model-${{ inputs.model_type }}
+          path: models/${{ inputs.model_type }}/
+          retention-days: 30
+      
+      - name: Create Pull Request with new model
+        if: github.ref == 'refs/heads/main'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: model-update/${{ inputs.model_type }}-${{ github.run_id }}
+          title: "Update ${{ inputs.model_type }} model (Run #${{ github.run_id }})"
+          body: |
+            Automated model training results:
+            - Model type: ${{ inputs.model_type }}
+            - Epochs: ${{ inputs.epochs }}
+            - Metrics: See report.json in artifact
+          commit-message: "Update ${{ inputs.model_type }} model"
+          add-paths: |
+            models/${{ inputs.model_type }}/

@@ -1,0 +1,80 @@
+site_name: Resume ML System
+site_description: Production-grade ML system for automated resume screening
+site_author: Your Name
+site_url: https://yourusername.github.io/resume-ml-system
+
+repo_name: yourusername/resume-ml-system
+repo_url: https://github.com/yourusername/resume-ml-system
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - content.code.annotation
+    - content.code.copy
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+          options:
+            docstring_style: google
+            show_source: true
+  - mkdocs-jupyter:
+      include_source: true
+      ignore_h1_titles: true
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/yourusername
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/yourusername
+  version:
+    provider: mike
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Installation: installation.md
+    - Quick Start: usage.md
+  - User Guide:
+    - Resume Parsing: guides/parsing.md
+    - Skill Extraction: guides/extraction.md
+    - JD Matching: guides/matching.md
+    - Candidate Ranking: guides/ranking.md
+    - Visual Comparison: guides/visualization.md
+  - API Reference:
+    - FastAPI Endpoints: api/endpoints.md
+    - Python SDK: api/sdk.md
+  - Model Documentation:
+    - Model Card: model-card.md
+    - Data Card: data-card.md
+    - Training Guide: training.md
+  - Development:
+    - Contributing: contributing.md
+    - Architecture: architecture.md
+    - Changelog: changelog.md
